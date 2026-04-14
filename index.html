@@ -32,12 +32,15 @@ body {
   background: radial-gradient(circle at center, #1a1a1a, #0d0d0d);
   text-align: center;
   animation: fadeIn 2s ease;
+  padding: 20px;
 }
 
 .hero h1 {
   font-family: 'Playfair Display', serif;
-  font-size: 3.5rem;
-  animation: float 3s ease-in-out infinite;
+  font-size: 2.4rem;
+  font-weight: 400;
+  max-width: 900px;
+  line-height: 1.4;
 }
 
 section {
@@ -46,19 +49,22 @@ section {
   margin: auto;
 }
 
+/* VIDEO */
 .video-container {
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 20px 60px rgba(0,0,0,0.6);
   width: 100%;
-  height: 70vh;
+  aspect-ratio: 16 / 9;
+  background: #000;
 }
 
 .video-container video {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
+  background: #000;
 }
 
 .letter {
@@ -106,18 +112,15 @@ footer {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); opacity: 0.7; }
-  50% { transform: translateY(-8px); opacity: 1; }
-}
 </style>
 </head>
 
 <body>
 
 <div class="hero">
-  <h1>𖹭</h1>
+  <h1>
+    i was blind before i saw the world through your eyes
+  </h1>
 </div>
 
 <section class="fade">
