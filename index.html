@@ -18,7 +18,6 @@ body {
   color:#eaeaea;
 }
 
-/* HERO */
 .hero {
   height:100vh;
   display:flex;
@@ -32,35 +31,31 @@ body {
 
 .hero h1 {
   font-family:'Playfair Display',serif;
-  font-size:2.2rem;
-  line-height:1.5;
-  max-width:900px;
+  font-size:2rem;
+  max-width:800px;
 }
 
-/* SECCIONES */
+/* secciones */
 section {
   padding:80px 20px;
   max-width:900px;
   margin:auto;
 }
 
-/* VIDEO PRINCIPAL */
+/* video principal */
 .video-container {
   border-radius:20px;
   overflow:hidden;
   box-shadow:0 20px 60px rgba(0,0,0,0.6);
-  width:100%;
-  aspect-ratio:16/9;
-  background:#000;
 }
 
 .video-container video {
   width:100%;
-  height:100%;
-  object-fit:contain;
+  height:auto;
+  display:block;
 }
 
-/* CARTA */
+/* carta */
 .letter {
   background:rgba(26,26,26,0.8);
   padding:40px;
@@ -80,31 +75,27 @@ section {
 .letter h2 {
   font-family:'Playfair Display',serif;
   margin-bottom:25px;
-  font-size:1.8rem;
 }
 
-.letter p + p {
-  margin-top:1.2em;
-}
-
-/* GALERÍA */
+/* galería */
 .gallery {
-  transition: opacity 0.4s ease;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  transition:opacity 0.4s ease;
 }
 
 .gallery img,
 .gallery video {
-  width:100%;
-  max-height:500px;
-  object-fit:contain; /* 👈 ya no recorta */
+  max-width:100%;
+  height:auto;
   border-radius:20px;
   box-shadow:0 20px 60px rgba(0,0,0,0.6);
   display:block;
   cursor:pointer;
-  background:#000;
 }
 
-/* ANIMACIONES */
+/* animaciones */
 .fade {
   opacity:0;
   transform:translateY(30px);
@@ -120,7 +111,6 @@ footer {
   text-align:center;
   padding:60px 20px;
   opacity:0.6;
-  font-size:0.9rem;
 }
 
 @keyframes fadeIn {
@@ -132,12 +122,10 @@ footer {
 
 <body>
 
-<!-- HERO -->
 <div class="hero">
   <h1>“I was blind before I saw the world through your eyes.”</h1>
 </div>
 
-<!-- VIDEO PRINCIPAL -->
 <section class="fade">
   <div class="video-container">
     <video controls autoplay muted playsinline>
@@ -146,19 +134,15 @@ footer {
   </div>
 </section>
 
-<!-- CARTA -->
 <section>
   <div class="letter fade">
     <h2>Para ti</h2>
-
     <p>Conocerte fue como empezar a ver colores donde antes no había…</p>
     <p>Hoy, al mirar todo lo que hemos vivido, solo puedo agradecer que sigas aquí, conmigo.</p>
     <p>Si alguna vez dudas de lo que significas para mí, vuelve aquí. 𖹭</p>
-
   </div>
 </section>
 
-<!-- GALERÍA -->
 <section class="fade">
   <div class="gallery" id="gallery"></div>
 </section>
@@ -168,7 +152,7 @@ footer {
 </footer>
 
 <script>
-// animaciones scroll
+// animaciones
 if ('IntersectionObserver' in window) {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -184,7 +168,7 @@ if ('IntersectionObserver' in window) {
   document.querySelectorAll('.fade').forEach(el => el.classList.add('visible'));
 }
 
-// GALERÍA (26 fotos + video)
+// galería
 const media = [
   ...Array.from({length: 26}, (_, i) => ({
     type: "image",
@@ -198,33 +182,36 @@ const container = document.getElementById("gallery");
 
 function renderMedia() {
   const item = media[current];
-  container.innerHTML = "";
-
-  if (item.type === "image") {
-    const img = document.createElement("img");
-    img.src = item.src;
-    img.onclick = next;
-    container.onclick = null;
-    container.appendChild(img);
-  }
-
-  if (item.type === "video") {
-    const video = document.createElement("video");
-    video.src = item.src;
-    video.controls = true;
-    video.autoplay = true;
-    video.muted = true;
-    video.playsInline = true;
-
-    container.onclick = next;
-    container.appendChild(video);
-  }
-
-  // transición
   container.style.opacity = 0;
+
   setTimeout(() => {
+    container.innerHTML = "";
+
+    let element;
+
+    if (item.type === "image") {
+      element = document.createElement("img");
+      element.src = item.src;
+      element.onclick = next;
+      container.onclick = null;
+    }
+
+    if (item.type === "video") {
+      element = document.createElement("video");
+      element.src = item.src;
+
+      element.controls = true;
+      element.autoplay = true;
+      element.muted = true;
+      element.playsInline = true;
+
+      container.onclick = next;
+    }
+
+    container.appendChild(element);
     container.style.opacity = 1;
-  }, 120);
+
+  }, 200);
 }
 
 function next() {
