@@ -18,6 +18,7 @@ body {
   color:#eaeaea;
 }
 
+/* HERO */
 .hero {
   height:100vh;
   display:flex;
@@ -36,12 +37,14 @@ body {
   max-width:900px;
 }
 
+/* SECCIONES */
 section {
   padding:80px 20px;
   max-width:900px;
   margin:auto;
 }
 
+/* VIDEO PRINCIPAL */
 .video-container {
   border-radius:20px;
   overflow:hidden;
@@ -57,6 +60,7 @@ section {
   object-fit:contain;
 }
 
+/* CARTA */
 .letter {
   background:rgba(26,26,26,0.8);
   padding:40px;
@@ -83,6 +87,7 @@ section {
   margin-top:1.2em;
 }
 
+/* GALERÍA */
 .gallery {
   transition: opacity 0.4s ease;
 }
@@ -91,13 +96,15 @@ section {
 .gallery video {
   width:100%;
   max-height:500px;
-  object-fit:cover;
+  object-fit:contain; /* 👈 ya no recorta */
   border-radius:20px;
   box-shadow:0 20px 60px rgba(0,0,0,0.6);
   display:block;
   cursor:pointer;
+  background:#000;
 }
 
+/* ANIMACIONES */
 .fade {
   opacity:0;
   transform:translateY(30px);
@@ -125,10 +132,12 @@ footer {
 
 <body>
 
+<!-- HERO -->
 <div class="hero">
   <h1>“I was blind before I saw the world through your eyes.”</h1>
 </div>
 
+<!-- VIDEO PRINCIPAL -->
 <section class="fade">
   <div class="video-container">
     <video controls autoplay muted playsinline>
@@ -137,6 +146,7 @@ footer {
   </div>
 </section>
 
+<!-- CARTA -->
 <section>
   <div class="letter fade">
     <h2>Para ti</h2>
@@ -148,6 +158,7 @@ footer {
   </div>
 </section>
 
+<!-- GALERÍA -->
 <section class="fade">
   <div class="gallery" id="gallery"></div>
 </section>
@@ -157,7 +168,7 @@ footer {
 </footer>
 
 <script>
-// animaciones
+// animaciones scroll
 if ('IntersectionObserver' in window) {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -173,7 +184,7 @@ if ('IntersectionObserver' in window) {
   document.querySelectorAll('.fade').forEach(el => el.classList.add('visible'));
 }
 
-// galería
+// GALERÍA (26 fotos + video)
 const media = [
   ...Array.from({length: 26}, (_, i) => ({
     type: "image",
@@ -185,51 +196,35 @@ const media = [
 let current = 0;
 const container = document.getElementById("gallery");
 
-function fadeChange(newElement) {
-  container.style.opacity = 0;
-
-  setTimeout(() => {
-    container.innerHTML = "";
-    container.appendChild(newElement);
-    container.style.opacity = 1;
-  }, 200);
-}
-
 function renderMedia() {
   const item = media[current];
-  let element;
+  container.innerHTML = "";
 
   if (item.type === "image") {
-    element = document.createElement("img");
-    element.src = item.src;
-    element.onclick = next;
+    const img = document.createElement("img");
+    img.src = item.src;
+    img.onclick = next;
     container.onclick = null;
+    container.appendChild(img);
   }
 
   if (item.type === "video") {
-    element = document.createElement("video");
-
-    const source = document.createElement("source");
-    source.src = item.src;
-    source.type = "video/mp4";
-
-    element.appendChild(source);
-
-    element.controls = true;
-    element.autoplay = true;
-    element.muted = true;
-    element.playsInline = true;
-
-    // FIX IMPORTANTE
-    element.style.width = "100%";
-    element.style.maxHeight = "500px";
-    element.style.objectFit = "contain";
-    element.style.background = "#000";
+    const video = document.createElement("video");
+    video.src = item.src;
+    video.controls = true;
+    video.autoplay = true;
+    video.muted = true;
+    video.playsInline = true;
 
     container.onclick = next;
+    container.appendChild(video);
   }
 
-  fadeChange(element);
+  // transición
+  container.style.opacity = 0;
+  setTimeout(() => {
+    container.style.opacity = 1;
+  }, 120);
 }
 
 function next() {
