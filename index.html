@@ -25,7 +25,6 @@ body {
   align-items:center;
   background:radial-gradient(circle at center,#1a1a1a,#0d0d0d);
   text-align:center;
-  animation:fadeIn 2s ease;
   padding:20px;
 }
 
@@ -41,25 +40,20 @@ section {
   margin:auto;
 }
 
+/* VIDEO */
 .video-container {
   border-radius:20px;
   overflow:hidden;
   box-shadow:0 20px 60px rgba(0,0,0,0.6);
 }
 
-.video-hint {
-  text-align:center;
-  opacity:0.6;
-  margin-bottom:10px;
-}
-
 .video-container video {
   width:100%;
   height:auto;
   display:block;
-  pointer-events:none;
 }
 
+/* CARTA */
 .letter {
   background:rgba(26,26,26,0.8);
   padding:40px;
@@ -73,6 +67,7 @@ section {
   margin-bottom:25px;
 }
 
+/* GALERÍA */
 .gallery {
   display:flex;
   justify-content:center;
@@ -83,18 +78,15 @@ section {
 .gallery img,
 .gallery video {
   max-width:100%;
-  height:auto;
   border-radius:20px;
   box-shadow:0 20px 60px rgba(0,0,0,0.6);
   display:block;
 }
 
+/* FINAL */
 #cinematicEnd {
   position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
+  inset:0;
   background:#000;
   display:flex;
   justify-content:center;
@@ -143,11 +135,6 @@ footer {
   padding:60px 20px;
   opacity:0.6;
 }
-
-@keyframes fadeIn {
-  from {opacity:0;}
-  to {opacity:1;}
-}
 </style>
 </head>
 
@@ -155,7 +142,7 @@ footer {
 
 <!-- si estás leyendo esto, te amo, Nico. mwah! -->
 
-<audio id="bgMusic" autoplay loop>
+<audio id="bgMusic" loop>
   <source src="./lana.mp3" type="audio/mpeg">
 </audio>
 
@@ -165,7 +152,7 @@ footer {
 
 <section class="fade">
   <div class="video-container">
-    <video autoplay loop muted playsinline>
+    <video id="mainVideo" controls playsinline>
       <source src="./video.mp4" type="video/mp4">
     </video>
   </div>
@@ -190,13 +177,13 @@ footer {
 
 <div id="cinematicEnd">
   <p>
-    Todo valió la pena…
-    <br><br>
+    Todo valió la pena…<br><br>
     porque me trajo a ti
   </p>
 </div>
 
 <script>
+/* fade in sections */
 if ('IntersectionObserver' in window) {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -212,9 +199,11 @@ if ('IntersectionObserver' in window) {
   document.querySelectorAll('.fade').forEach(el => el.classList.add('visible'));
 }
 
+/* música con fade al play del video */
+const video = document.getElementById("mainVideo");
 const music = document.getElementById("bgMusic");
 
-document.addEventListener("click", () => {
+video.addEventListener("play", () => {
   music.volume = 0;
   music.play().catch(() => {});
 
@@ -227,8 +216,9 @@ document.addEventListener("click", () => {
       clearInterval(fade);
     }
   }, 80);
-}, { once: true });
+});
 
+/* gallery */
 const media = [
   ...Array.from({ length: 26 }, (_, i) => ({
     type: "image",
@@ -247,33 +237,30 @@ function renderMedia() {
   setTimeout(() => {
     container.innerHTML = "";
 
-    let element = null;
+    let el;
 
     if (item.type === "image") {
-      element = document.createElement("img");
-      element.src = item.src;
-      element.loading = "lazy";
+      el = document.createElement("img");
+      el.src = item.src;
+      el.loading = "lazy";
     }
 
     if (item.type === "video") {
-      element = document.createElement("video");
-      element.src = item.src;
-      element.controls = true;
-      element.autoplay = true;
-      element.muted = true;
-      element.playsInline = true;
+      el = document.createElement("video");
+      el.src = item.src;
+      el.controls = true;
+      el.autoplay = true;
+      el.muted = true;
+      el.playsInline = true;
 
-      element.onended = () => {
+      el.onended = () => {
         document.getElementById("cinematicEnd").classList.add("show");
       };
     }
 
-    container.onclick = (e) => {
-      if (item.type === "image") next();
-      else if (item.type === "video" && e.target === container) next();
-    };
+    container.onclick = () => next();
 
-    container.appendChild(element);
+    container.appendChild(el);
     container.style.opacity = 1;
   }, 200);
 }
