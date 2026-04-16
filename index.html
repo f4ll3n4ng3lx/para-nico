@@ -195,7 +195,7 @@ if ('IntersectionObserver' in window) {
   document.querySelectorAll('.fade').forEach(el => el.classList.add('visible'));
 }
 
-/* audio sync completo */
+/* AUDIO CONTROL (estable y no agresivo) */
 const video = document.getElementById("mainVideo");
 const music = document.getElementById("bgMusic");
 
@@ -207,13 +207,17 @@ video.addEventListener("play", () => {
     music.play().catch(() => {});
     musicStarted = true;
     videoEnded = false;
-  } else if (videoEnded) {
+    return;
+  }
+
+  if (videoEnded) {
     music.currentTime = 0;
     music.play().catch(() => {});
     videoEnded = false;
-  } else {
-    music.play().catch(() => {});
+    return;
   }
+
+  music.play().catch(() => {});
 });
 
 video.addEventListener("pause", () => {
@@ -223,6 +227,13 @@ video.addEventListener("pause", () => {
 video.addEventListener("ended", () => {
   videoEnded = true;
   music.pause();
+});
+
+/* solo corrige cuando el usuario hace seek manual */
+video.addEventListener("seeked", () => {
+  if (musicStarted && !videoEnded) {
+    music.currentTime = video.currentTime;
+  }
 });
 
 /* gallery */
