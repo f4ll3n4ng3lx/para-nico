@@ -18,7 +18,6 @@ body {
   color:#eaeaea;
 }
 
-/* HERO */
 .hero {
   height:100vh;
   display:flex;
@@ -36,14 +35,12 @@ body {
   max-width:800px;
 }
 
-/* SECCIONES */
 section {
   padding:80px 20px;
   max-width:900px;
   margin:auto;
 }
 
-/* VIDEO PRINCIPAL */
 .video-container {
   border-radius:20px;
   overflow:hidden;
@@ -60,15 +57,14 @@ section {
   width:100%;
   height:auto;
   display:block;
+  pointer-events:none;
 }
 
-/* CARTA */
 .letter {
   background:rgba(26,26,26,0.8);
   padding:40px;
   border-radius:20px;
   line-height:1.9;
-  -webkit-backdrop-filter:blur(6px);
   backdrop-filter:blur(6px);
 }
 
@@ -77,7 +73,6 @@ section {
   margin-bottom:25px;
 }
 
-/* GALERÍA */
 .gallery {
   display:flex;
   justify-content:center;
@@ -94,7 +89,6 @@ section {
   display:block;
 }
 
-/* FADE FINAL */
 #cinematicEnd {
   position:fixed;
   top:0;
@@ -109,7 +103,6 @@ section {
 
   opacity:0;
   pointer-events:none;
-
   transition:opacity 2.5s ease;
   z-index:9999;
 }
@@ -119,7 +112,6 @@ section {
   font-size:1.4rem;
   color:#eaeaea;
   max-width:80%;
-
   opacity:0;
   transform:translateY(20px);
   transition:opacity 2s ease 1s, transform 2s ease 1s;
@@ -135,7 +127,6 @@ section {
   transform:translateY(0);
 }
 
-/* ANIMACIONES */
 .fade {
   opacity:0;
   transform:translateY(30px);
@@ -164,14 +155,17 @@ footer {
 
 <!-- si estás leyendo esto, te amo, Nico. mwah! -->
 
+<audio id="bgMusic" autoplay loop>
+  <source src="./lana.mp3" type="audio/mpeg">
+</audio>
+
 <div class="hero">
   <h1>“I was blind before I saw the world through your eyes.”</h1>
 </div>
 
 <section class="fade">
   <div class="video-container">
-    <p class="video-hint">toca para reproducir</p>
-    <video controls playsinline>
+    <video autoplay loop muted playsinline>
       <source src="./video.mp4" type="video/mp4">
     </video>
   </div>
@@ -218,6 +212,23 @@ if ('IntersectionObserver' in window) {
   document.querySelectorAll('.fade').forEach(el => el.classList.add('visible'));
 }
 
+const music = document.getElementById("bgMusic");
+
+document.addEventListener("click", () => {
+  music.volume = 0;
+  music.play().catch(() => {});
+
+  let vol = 0;
+  const fade = setInterval(() => {
+    if (vol < 1) {
+      vol += 0.02;
+      music.volume = Math.min(vol, 1);
+    } else {
+      clearInterval(fade);
+    }
+  }, 80);
+}, { once: true });
+
 const media = [
   ...Array.from({ length: 26 }, (_, i) => ({
     type: "image",
@@ -241,7 +252,6 @@ function renderMedia() {
     if (item.type === "image") {
       element = document.createElement("img");
       element.src = item.src;
-      element.alt = "";
       element.loading = "lazy";
     }
 
@@ -259,17 +269,11 @@ function renderMedia() {
     }
 
     container.onclick = (e) => {
-      if (item.type === "image") {
-        next();
-      } else if (item.type === "video" && e.target === container) {
-        next();
-      }
+      if (item.type === "image") next();
+      else if (item.type === "video" && e.target === container) next();
     };
 
-    if (element !== null) {
-      container.appendChild(element);
-    }
-
+    container.appendChild(element);
     container.style.opacity = 1;
   }, 200);
 }
